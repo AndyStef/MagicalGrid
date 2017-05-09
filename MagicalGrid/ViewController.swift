@@ -10,9 +10,12 @@ import UIKit
 
 class MainViewController: UIViewController {
     
+    let numViewPerRow = 15
+    var cells = [String: UIView]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let numViewPerRow = 15
+
         let screenWidh = view.frame.width
         let viewWidth = screenWidh / CGFloat(numViewPerRow)
         let numViewPerColumn = view.frame.height / viewWidth
@@ -25,6 +28,9 @@ class MainViewController: UIViewController {
                 squareView.layer.borderWidth = 1.0
                 squareView.frame = CGRect(x: CGFloat(i) * viewWidth, y: CGFloat(j) * viewWidth, width: viewWidth, height: viewWidth)
                 view.addSubview(squareView)
+                
+                let key = "\(i)|\(j)"
+                cells[key] = squareView
             }
         }
         
@@ -33,7 +39,26 @@ class MainViewController: UIViewController {
     }
     
     func handlePan(pan: UIPanGestureRecognizer) {
-        print("handled pan")
+        //MARK: - Solution that uses hash map and much more effective 
+        let location = pan.location(in: view)
+        let viewWidth = view.frame.width / CGFloat(numViewPerRow)
+        let i = Int(location.x / viewWidth)
+        let j = Int(location.y / viewWidth)
+        let key = "\(i)|\(j)"
+        let cellView = cells[key]
+        cellView?.backgroundColor = .white
+        
+        
+        //MARK: - bad solution because of huge number of iterations
+//        for subview in view.subviews {
+//            if subview.frame.contains(location) {
+//                let transform = CGAffineTransform(scaleX: 2.5, y: 2.5)
+//                view.bringSubview(toFront: subview)
+//                UIView.animate(withDuration: 0.2, animations: {
+//                    subview.transform = transform
+//                })
+//            }
+//        }
     }
     
     override var prefersStatusBarHidden: Bool {
