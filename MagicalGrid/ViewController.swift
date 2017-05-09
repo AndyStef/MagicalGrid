@@ -12,6 +12,7 @@ class MainViewController: UIViewController {
     
     let numViewPerRow = 15
     var cells = [String: UIView]()
+    var selectedView: UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,15 +40,33 @@ class MainViewController: UIViewController {
     }
     
     func handlePan(pan: UIPanGestureRecognizer) {
-        //MARK: - Solution that uses hash map and much more effective 
+        //MARK: - Solution that uses hash map and much more effective
         let location = pan.location(in: view)
         let viewWidth = view.frame.width / CGFloat(numViewPerRow)
         let i = Int(location.x / viewWidth)
         let j = Int(location.y / viewWidth)
         let key = "\(i)|\(j)"
-        let cellView = cells[key]
-        cellView?.backgroundColor = .white
+        guard let cellView = cells[key] else { return }
         
+        if selectedView != cellView {
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
+                self.selectedView?.layer.transform = CATransform3DIdentity
+            }, completion: nil)
+        }
+        
+        selectedView = cellView
+        view.bringSubview(toFront: cellView)
+        
+        UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            cellView.layer.transform = CATransform3DMakeScale(6, 6, 6)
+        }, completion: nil)
+        
+        
+        if pan.state == .ended {
+            UIView.animate(withDuration: 0.5, delay: 0.25, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+                cellView.layer.transform = CATransform3DIdentity
+            }, completion: nil)
+        }
         
         //MARK: - bad solution because of huge number of iterations
 //        for subview in view.subviews {
