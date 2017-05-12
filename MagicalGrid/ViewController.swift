@@ -58,7 +58,7 @@ class MainViewController: UIViewController {
         view.bringSubview(toFront: cellView)
         
         UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-            cellView.layer.transform = CATransform3DMakeScale(6, 6, 6)
+            cellView.layer.transform = CATransform3DMakeScale(4, 4, 4)
         }, completion: nil)
         
         
